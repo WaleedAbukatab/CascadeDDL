@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+@model CascadeDDL.Models.CascadeDDLViewModel
+
+<br />
+<br />
+<div class="container">
+    <div class="form-group">
+        @if (ViewBag.CountryList != null)
+        {
+            // Using Html Heleper
+            @*@Html.DropDownListFor(model => model.CountryId, ViewBag.CountryList as SelectList, "--Select Country--", new { @class="form-control"})*@
+            // Using Html Heleper
+            <select name="CountryId" id="CountryId" class="form-select">
+                <option disabled selected> -- Selecte Country -- </option>
+                @foreach (var item in @ViewBag.CountryList)
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </select>
+        }
+    </div>
+    <div class="form-group">
+@*        @Html.DropDownListFor(model => model.CityId,new SelectList(" "), "--Select State--", new { @class = "form-control" })
+*@
+        <select name="CityId" id="CityId" class="form-select">
+            <option disabled selected> -- Selecte City -- </option>
+        </select>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#CountryId").change(function () {
+            debugger
+            $.get("/Home/GetCityList", { CountryId: $("#CountryId").val() }, function (data) {
+                $("#CityId").empty();
+                $.each(data, function (index, row) {
+                    $("#CityId").append("<option value='" + row.id + "'>" + row.cityName + "</option>")
+                });
+            });
+        })
+    });
+</script>
